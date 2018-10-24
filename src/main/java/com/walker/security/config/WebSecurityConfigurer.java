@@ -22,7 +22,10 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .antMatchers("/admins/**").hasRole("ADMIN") // 相应角色可以访问
                 .and()
                 .formLogin() // 基于 form 表单登录验证
-                .loginPage("/login").failureUrl("/login-error");
+                .loginPage("/login").failureUrl("/login-error")
+                .and()
+                .exceptionHandling().accessDeniedPage("/403"); // 处理异常
+        http.logout().logoutSuccessUrl("/"); // 成功登出后，重定向到首页
     }
 
     /**
@@ -49,6 +52,12 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(userDetailsService());
     }
 
+    /**
+     * Spring Security 5 需要配置 PasswordEncoder, 不然会出现
+     * java.lang.IllegalArgumentException: There is no PasswordEncoder mapped for the id "null"
+     *
+     * @return
+     */
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
