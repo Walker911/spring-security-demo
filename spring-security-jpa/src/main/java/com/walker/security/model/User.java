@@ -15,7 +15,7 @@ public class User implements UserDetails, Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length=50, columnDefinition = "COMMENT '名字'")
+    @Column(nullable = false, length=50)
     private String name;
 
     @Column(nullable = false)

@@ -23,7 +23,6 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers("/css/**", "/js/**", "/fonts/**", "/index").permitAll() // 都可以访问
-                .antMatchers("/h2-console/**").permitAll()
 //                .antMatchers("/users/**").hasRole("USER")  // 相应角色可以访问
                 .antMatchers("/users/**").hasAnyRole("USER", "ADMIN")
                 .antMatchers("/admins/**").hasRole("ADMIN") // 相应角色可以访问
