@@ -3,6 +3,7 @@ package com.walker.security.model;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class Authority implements GrantedAuthority {
@@ -13,6 +14,14 @@ public class Authority implements GrantedAuthority {
 
     @Column(nullable = false)
     private String name;
+
+    @ManyToMany
+    @JoinTable(name = "user_authority", joinColumns = @JoinColumn(name = "authority_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
+    private List<User> users;
+
+    public Authority() {
+    }
 
     public Long getId() {
         return id;
