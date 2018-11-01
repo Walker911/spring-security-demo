@@ -1,10 +1,12 @@
 package com.walker.security.model;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -27,7 +29,13 @@ public class User implements UserDetails, Serializable {
     @Column(nullable = false, length = 100)
     private String password;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    /**
+     * ManyToMany delete problem
+     * cascade = CascadeType.ALL, 删除时不仅删除关联表，还会删除 authority 表中关联数据，会出现错误
+     * 需要设置为 cascade = CascadeType.PERSIST, 具体参考
+     * https://stackoverflow.com/questions/48419158/spring-data-jpa-manytomany-delete-entities-of-the-join-table
+     */
+    @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinTable(name = "user_authority", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "authority_id", referencedColumnName = "id"))
     private List<Authority> authorities;
@@ -79,7 +87,11 @@ public class User implements UserDetails, Serializable {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
+        List<SimpleGrantedAuthority> simpleGrantedAuthorities = new ArrayList<>();
+        for (GrantedAuthority authority : authorities) {
+            simpleGrantedAuthorities.add(new SimpleGrantedAuthority(authority.getAuthority()));
+        }
+        return simpleGrantedAuthorities;
     }
 
     @Override

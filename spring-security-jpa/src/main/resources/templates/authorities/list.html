@@ -14,18 +14,16 @@
         <thead>
         <tr>
             <td>ID</td>
-            <td>Age</td>
-            <td>Name</td>
+            <td>Role Name</td>
         </tr>
         </thead>
         <tbody>
-        <tr th:if="${admins.size()} eq 0">
-            <td colspan="3">没有用户信息！！</td>
+        <tr th:if="${authorities.size()} eq 0">
+            <td colspan="3">没有角色信息！！</td>
         </tr>
-        <tr th:each="user : ${admins}">
-            <td th:text="${user.id}">1</td>
-            <td th:text="${user.age}">11</td>
-            <td th:text="${user.name}">waylau</a></td>
+        <tr th:each="authority : ${authorities}">
+            <td th:text="${authority.id}">1</td>
+            <td th:text="${authority.name}">waylau</a></td>
         </tr>
         </tbody>
     </table>
