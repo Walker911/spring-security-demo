@@ -1,47 +1,36 @@
 package com.walker.security.config;
 
+import com.walker.security.auth.AuthenticationSuccessHandler;
 import com.walker.security.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
-
-import javax.sql.DataSource;
 
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 
-    private static final String key = "walker";
-
     @Autowired
-    private DataSource dataSource;
-
-    @Bean
-    public JdbcTokenRepositoryImpl tokenRepository() {
-        JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
-        tokenRepository.setDataSource(dataSource);
-        return tokenRepository;
-    }
-
+    private AuthenticationSuccessHandler successHandler;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers("/css/**", "/js/**", "/fonts/**", "/index").permitAll() // 都可以访问
+//                .antMatchers("/users/**").hasRole("USER")  // 相应角色可以访问
                 .antMatchers("/users/**").hasAnyRole("USER", "ADMIN")
                 .antMatchers("/admins/**").hasRole("ADMIN") // 相应角色可以访问
                 .and()
-                .formLogin() // 基于 form 表单登录验证
-                .loginPage("/login").failureUrl("/login-error")
-                .and().rememberMe().key(key).tokenRepository(tokenRepository()) // 启用 remember me
+                .httpBasic() // 使用 basic 认证
+                .and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .exceptionHandling().accessDeniedPage("/403"); // 处理异常
         http.logout().logoutSuccessUrl("/"); // 成功登出后，重定向到首页
