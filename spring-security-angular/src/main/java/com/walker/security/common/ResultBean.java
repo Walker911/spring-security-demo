@@ -45,6 +45,10 @@ public class ResultBean<T> {
         return new ResultBean<>(SUCCESS, SUCCESS_MESSAGE, data, ext);
     }
 
+    public static <T> ResultBean<T> error(String message) {
+        return error(-1, message);
+    }
+
     public static <T> ResultBean<T> error(int code, String message) {
         return error(code, message, null);
     }
