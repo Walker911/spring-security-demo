@@ -10,7 +10,7 @@ import java.util.List;
  * @author walker
  * @date 2018/12/21
  */
-public interface RoleRepository extends JpaRepository<Role, Long> {
+public interface RoleRepository extends JpaRepository<Role, String> {
 
     /**
      *  find roles by user id

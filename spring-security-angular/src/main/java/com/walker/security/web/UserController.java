@@ -1,11 +1,11 @@
 package com.walker.security.web;
 
 import com.walker.security.common.ResultBean;
+import com.walker.security.dto.UserDTO;
 import com.walker.security.model.User;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.walker.security.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author walker
@@ -15,14 +15,22 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/user")
 public class UserController {
 
+    private final UserService userService;
+
+    @Autowired
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
     @PostMapping("/login")
     public ResultBean<?> login() {
         return null;
     }
 
-    @PostMapping("/register")
-    public ResultBean<User> register() {
-        return null;
+    @PostMapping("/add")
+    public ResultBean<String> add(@RequestBody UserDTO userDTO) {
+        User user = userService.save(userDTO);
+        return ResultBean.success(user.getId());
     }
 
     @GetMapping("/logout")

@@ -1,4 +1,4 @@
-package com.walker.security.service;
+package com.walker.security.service.impl;
 
 import com.walker.security.model.Role;
 import com.walker.security.model.User;
