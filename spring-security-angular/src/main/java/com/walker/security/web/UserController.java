@@ -7,6 +7,8 @@ import com.walker.security.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 /**
  * @author walker
  * @date 2019/2/28
@@ -36,5 +38,10 @@ public class UserController {
     @GetMapping("/logout")
     public ResultBean<?> logout() {
         return null;
+    }
+
+    @GetMapping("/check")
+    public Principal check(Principal user) {
+        return user;
     }
 }
